@@ -16,7 +16,7 @@ main.py Objective:
 # cv2.imwrite("IMG-9865.png", img_grayscale)
 
 # specify input
-video_list = ["videos/sample_video.mp4"]
+video_list = ["videos/zeke2.mp4"]
 for video in video_list:
     results = process_video(video_path=video)
     # TODO implement dataset formatting
