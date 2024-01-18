@@ -1,5 +1,6 @@
-from ai_engine import AIEngine
+# from ai_engine import AIEngine
 from cvpipe import process_video
+from dataset import process_and_save_dataset, add_distance_column
 
 """
 main.py Objective:
@@ -16,16 +17,29 @@ main.py Objective:
 # cv2.imwrite("IMG-9865.png", img_grayscale)
 
 # specify input
-video_list = ["videos/zeke2.mp4"]
+video_list = ["videos/andrea1.mp4", "videos/zeke2.mp4"]
+file_path = "swimming.csv"
+
+sequences = []
 for video in video_list:
     results = process_video(video_path=video)
-    # TODO implement dataset formatting
-    
-# TODO format and save final dataset
+    sequences.append(results)
 
 
+process_and_save_dataset(sequences=sequences, file_path=file_path)
 
-# if __name__ == "__main__":
-#     pass
-
-
+# TODO: add distance column manually
+# e.g. 4 videos would mean 4 distances like [5.5, 5.0, 6.1, 6.5]
+add_distance_column(file_path, [])
+"""carson 405
+andrea 445
+sean 420
+hamilton 451
+paige 412
+zeke 600
+vince 445
+zeke 645
+trevor 623
+david 500
+daniel 669"""
+# How far away from the subject, plug into math formula
