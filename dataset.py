@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def add_distance_column(csv_file_path, distances)
+def add_distance_column(csv_file_path, distances):
     df = pd.read_csv(csv_file_path)
 
     if len(distances) != len(df):
