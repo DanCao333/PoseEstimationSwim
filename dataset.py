@@ -11,7 +11,7 @@ def add_distance_column(csv_file_path, distances):
 
     df.to_csv(csv_file_path, index=False)
 
-def add_padding(sequences):
+def add_padding(sequences, max=-1):
     max_sequence_len = max(len(seq) - 1 for seq in sequences)
     padding_val = 0.0
 
@@ -26,20 +26,27 @@ def add_padding(sequences):
         
         padded_sequences.append(temp)
     
-    return padded_sequences
+    return padded_sequences, max_sequence_len
 
 
 def process_and_save_dataset(sequences, file_path):
-    result = add_padding(sequences)
+    result, max_seq = add_padding(sequences)
+
+    path_components = file_path.split(".")
+    path_components[0] = path_components[0] + str(max_seq) + "."
+    file_path = "".join(path_components)
+
+    print(f"SAVING TO: {file_path}")
 
     # Prepare the columns for DF
-    n_frames = len(result[0]) // 4 # depends on how many data points you are including
+    n_frames = len(result[0]) // 5 # depends on how many data points you are including
     column_name = []
     for i in range(n_frames):
         column_name.append(f"Left Leg: {i}")
         column_name.append(f"Right Leg: {i}")
         column_name.append(f"Left Arm: {i}")
         column_name.append(f"Right Arm: {i}")
+        column_name.append(f"Body Angle: {i}")
     column_name.append("Velocity")
 
     # DF creation
@@ -47,3 +54,22 @@ def process_and_save_dataset(sequences, file_path):
 
     # Save to CSV
     df.to_csv(file_path, index=False)
+
+def process_dataset(sequences): # TODO: add second arg for max pad
+    result, max_seq = add_padding(sequences)
+
+    # Prepare the columns for DF
+    n_frames = len(result[0]) // 5 # depends on how many data points you are including
+    column_name = []
+    for i in range(n_frames):
+        column_name.append(f"Left Leg: {i}")
+        column_name.append(f"Right Leg: {i}")
+        column_name.append(f"Left Arm: {i}")
+        column_name.append(f"Right Arm: {i}")
+        column_name.append(f"Body Angle: {i}")
+    column_name.append("Velocity")
+
+    # DF creation
+    df = pd.DataFrame(result, columns=column_name)
+
+    return df

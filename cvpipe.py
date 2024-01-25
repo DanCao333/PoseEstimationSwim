@@ -91,8 +91,13 @@ def process_frame(frame, width, height, pose=None, mp_pose=None, mp_drawing=None
 
         lwrist_landmark = landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST]
         lwrist_position = (lwrist_landmark.x * width, lwrist_landmark.y * height) if lwrist_landmark.visibility > 0.5 else (0, 0)
-        mp_drawing.draw_landmarks(frame, landmarks, mp_pose.POSE_CONNECTIONS)
         
+        
+        # To calculate body angle
+        rhip_landmark = landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP]
+        rhip_position = (rhip_landmark.x * width, rhip_landmark.y * height) if lwrist_landmark.visibility > 0.5 else (0, 0)
+        mp_drawing.draw_landmarks(frame, landmarks, mp_pose.POSE_CONNECTIONS)
+
         # Shoulder position
         shoulder_position = rshoulder_position
         
@@ -119,13 +124,16 @@ def process_frame(frame, width, height, pose=None, mp_pose=None, mp_drawing=None
                                         landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW],
                                         landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST])
         # print(f"Angle of right arms: {angle_r_arms}")
-
+        angle_body = calculate_angle(landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER],
+                                        landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP],
+                                        landmarks.landmark[mp_pose.PoseLandmark.RIGHT_KNEE])
         avg_arm_text = math.trunc((angle_r_arms + angle_l_arms)/2)
         
         # Prints out angle on screen:
         cv2.putText(frame, str("Arm angle: ") + str(avg_arm_text) + str(" Right leg angle: ") + str(r_leg_text) + str(" Left leg angle: ") + str(l_leg_text), org=(50,50), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1.0, color=(0, 0, 204))
         # print([angle_l_legs, angle_r_legs, angle_l_arms, angle_r_arms])
-        angle_sequence.append([angle_l_legs, angle_r_legs, angle_l_arms, angle_r_arms])
+        angle_sequence.append([angle_l_legs, angle_r_legs, angle_l_arms, angle_r_arms, angle_body])
+        
 
     return angle_sequence, shoulder_position, frame
 
@@ -156,7 +164,6 @@ def process_video(video_path):
     # Start looking at the video
     print("Starting video playback")
     while cap.isOpened():
-        print
         success, frame = cap.read()
 
         if not success:
