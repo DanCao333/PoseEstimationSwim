@@ -11,8 +11,13 @@ def add_distance_column(csv_file_path, distances):
 
     df.to_csv(csv_file_path, index=False)
 
-def add_padding(sequences, max=-1):
-    max_sequence_len = max(len(seq) - 1 for seq in sequences)
+def add_padding(sequences, max_val=-1):
+    if max_val > 0:
+        max_sequence_len = max_val
+    else:
+        max_sequence_len = max(len(seq) - 1 for seq in sequences)
+
+    print(f"MAX SEQ LEN {max_sequence_len}")
     padding_val = 0.0
 
     # Calculate the number of elements to pad
@@ -32,9 +37,9 @@ def add_padding(sequences, max=-1):
 def process_and_save_dataset(sequences, file_path):
     result, max_seq = add_padding(sequences)
 
-    path_components = file_path.split(".")
-    path_components[0] = path_components[0] + str(max_seq) + "."
-    file_path = "".join(path_components)
+    # path_components = file_path.split(".")
+    # path_components[0] = path_components[0] + str(max_seq) + "."
+    # file_path = "".join(path_components)
 
     print(f"SAVING TO: {file_path}")
 
@@ -55,8 +60,10 @@ def process_and_save_dataset(sequences, file_path):
     # Save to CSV
     df.to_csv(file_path, index=False)
 
-def process_dataset(sequences): # TODO: add second arg for max pad
-    result, max_seq = add_padding(sequences)
+def process_dataset(sequences, max_pad=-1): # TODO: add second arg for max pad
+    result, max_seq = add_padding(sequences, max_val=max_pad)
+
+    print(f"Vince elements: {result}\nMAX SEQ: {max_seq}")
 
     # Prepare the columns for DF
     n_frames = len(result[0]) // 5 # depends on how many data points you are including
@@ -68,6 +75,9 @@ def process_dataset(sequences): # TODO: add second arg for max pad
         column_name.append(f"Right Arm: {i}")
         column_name.append(f"Body Angle: {i}")
     column_name.append("Velocity")
+
+    # if max_pad > 0:
+    #     column_name.append("Distance")
 
     # DF creation
     df = pd.DataFrame(result, columns=column_name)
