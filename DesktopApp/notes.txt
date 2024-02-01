@@ -1,0 +1,28 @@
+main.py # app entry point
+app.py # core application setup
+
+assets/
+-images/
+-icons/
+-*fonts/
+-*styles/
+
+screens/
+-home_screen.py
+-gallery_screen.py
+-support_screen.py
+
+components/ # reusable custom widgets
+-sidebar.py
+-*custom_button.py
+
+dialogs/
+-settings_dialog.py
+-input_dialog.py
+
+utilities/
+-video_analysis.py
+-file_operations.py
+
+*config/
+-settings.py

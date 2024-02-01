@@ -20,54 +20,61 @@ main.py Objective:
 command = input("Which operation would you like to do? (0:DATASET, 1:EDIT, 2:ANALYSIS, 3: TRAIN, 4: UNIVERSAL): ").strip()
 
 MODEL_PATH = "model_v1.pkl"
+DATA_PATH = "csv/swimming.csv"
+
+# MASTER_DATA = {
+#     "videos/carson1.mp4": 405,
+
+# }
+
+
+# for entry in MASTER_DATA.items():
+#     print(entry)
+#     VIDEO_LIST.append(entry.key)
+#     DISTANCE_COLUMN.append(entry.values)
+
+VIDEO_LIST = ["videos/carson1.mp4", "videos/vince1.mp4", "videos/sean1.mp4", "videos/andrew1.mp4", "videos/paige1.mp4", "videos/zeke2.mp4", "videos/vince2.mp4", "videos/trevor1.mp4"]
+DISTANCE_COLUMN = [405, 445, 420, 451, 412, 600, 461, 623]
 
 if command == "0":
-    # specify input
-    video_list = ["videos/carson1.mp4", "videos/andrea1.mp4", "videos/sean1.mp4", "videos/andrew1.mp4", "videos/paige1.mp4", "videos/zeke2.mp4", "videos/vince2.mp4", "videos/trevor1.mp4"] 
-    
-    # video_list = ["videos/andrea1.mp4"]
-    file_path = "csv/swimming.csv"
-
     sequences = []
-    for video in video_list:
+
+    for video in VIDEO_LIST:
         results = process_video(video_path=video)
         sequences.append(results)
 
-    process_and_save_dataset(sequences=sequences, file_path=file_path)
+    process_and_save_dataset(sequences=sequences, file_path=DATA_PATH)
 
 elif command == "1":
-    # pass
-    file_path = "csv/swimming.csv"
-    # e.g. 4 videos would mean 4 distances like [5.5, 5.0, 6.1, 6.5]0
-    add_distance_column(file_path, [405, 445, 420, 451, 412, 600, 461, 623])
+    # Add true distance values
+    add_distance_column(DATA_PATH, DISTANCE_COLUMN)
     
     # How far away from the subject, plug into math formula
+    
 elif command == "2":
     print(f"Attempting to analyze {MODEL_PATH}")
     tester = AI_Tester(MODEL_PATH)
-    prediction = tester.analyze("videos/vince1.mp4")
+    prediction = tester.analyze("videos/david2.mp4")
     print(f"PREDICTION (SCORE): {prediction}")
+    
 elif command == "3":
     print(f"Attempting to train")
     data_path = "csv/swimming.csv"
-    model_name = "model_v1.pkl"
-    train_model(dataset_path=data_path, model_name=model_name)
+    train_model(dataset_path=data_path, model_name=MODEL_PATH)
+    
 elif command == "4":
-    video_list = ["videos/carson1.mp4", "videos/vince1.mp4", "videos/sean1.mp4", "videos/andrew1.mp4", "videos/paige1.mp4", "videos/zeke2.mp4", "videos/vince2.mp4", "videos/trevor1.mp4"] 
-    file_path = "csv/swimming.csv"
     sequences = []
-    for video in video_list:
+    for video in VIDEO_LIST:
         results = process_video(video_path=video)
         sequences.append(results)
-    process_and_save_dataset(sequences=sequences, file_path=file_path)
-    add_distance_column(file_path, [405, 445, 420, 451, 412, 600, 461, 623])
+    process_and_save_dataset(sequences=sequences, file_path=DATA_PATH)
+    add_distance_column(DATA_PATH, DISTANCE_COLUMN)
     print(f"Attempting to train")
-    model_name = "model_v1.pkl"
-    train_model(dataset_path=file_path, model_name=model_name)
-    print(f"Attempting to analyze {model_name}")
-    tester = AI_Tester(model_name)
-    prediction = tester.analyze("videos/andrea1.mp4")
-    print(f"PREDICTION (SCORE): {prediction}")
+    train_model(dataset_path=DATA_PATH, model_name=MODEL_PATH)
+    print(f"Attempting to analyze {MODEL_PATH}")
+    tester = AI_Tester(MODEL_PATH)
+    prediction = tester.analyze("videos/trevor2.mp4")
+    print(f"PREDICTION (SCORE): {prediction} inches")
 
 
 
